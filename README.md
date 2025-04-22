@@ -1,5 +1,18 @@
-# ai-chatbot
-Nutritional facts will be fetched from the USDA FoodData Central API, and cosmetic ingredient details from the EU CosIng database and we could communicate with a chatbot
+# AI Chatbot Demo
+
+A full-stack AI chatbot using the Groq LLM API, demonstrating nutrition and beauty product Q&A.
+
+## Tech Stack
+- **Backend**: Python + FastAPI
+- **Frontend**: Next.js + React + Tailwind CSS
+- **AI**: Groq LLM API + Pinecone (RAG)
+- **Hosting**: Render (backend), Vercel (frontend)
+
+## Setup
+1. Clone repo
+2. Create `.env` files with your API keys
+3. Start backend: `uvicorn app.main:app --reload`
+4. Start frontend: `npm run dev`
 
 ## Directory Structure
 
