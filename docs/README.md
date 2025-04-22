@@ -1,4 +1,4 @@
-# AI Chatbot 
+# AI Chatbot Demo
 
 A full-stack AI chatbot using the Groq LLM API, demonstrating nutrition and beauty product Q&A.
 
