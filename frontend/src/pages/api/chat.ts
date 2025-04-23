@@ -1,6 +1,6 @@
 // frontend/src/pages/api/chat.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
+
 
 type ChatResponse = { reply: string };
 
@@ -14,7 +14,7 @@ export default async function handler(
   }
 
   try {
-    const { message } = req.body as { message: string };
+    
     // ... axios call and forwarding logic ...
   } catch (err: unknown) {
     console.error('Chat API error:', err);
