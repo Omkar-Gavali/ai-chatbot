@@ -1,33 +1,41 @@
-// frontend/src/pages/index.tsx
-import React, { useState } from 'react';
-import axios from 'axios';
-import MessageBubble from '../components/MessageBubble';
-import ChatInput from '../components/ChatInput';
+import React, { useState } from 'react'
+import MessageBubble from '../components/MessageBubble'
+import ChatInput from '../components/ChatInput'
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-type Message = { text: string; isUser: boolean };
+type Message = { text: string; isUser: boolean }
 
-export default function HomePage() {
-  const [messages, setMessages] = useState<Message[]>([]);
+const HomePage: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([])
 
   const sendMessage = async (text: string) => {
-    setMessages(prev => [...prev, { text, isUser: true }]);
+    const userMsg: Message = { text, isUser: true }
+    setMessages(prev => [...prev, userMsg])
+
     try {
-      const res = await axios.post('/api/chat', { message: text });
-      setMessages(prev => [...prev, { text: res.data.reply, isUser: false }]);
-    } catch {
-      setMessages(prev => [...prev, { text: 'Error: could not reach server.', isUser: false }]);
+      const res = await axios.post('/api/chat', { message: text })
+      const botMsg: Message = { text: res.data.reply, isUser: false }
+      setMessages(prev => [...prev, botMsg])
+    } catch (err) {
+      console.error(err)
+      toast.error('Error communicating with the chatbot.')
     }
-  };
+  }
 
   return (
     <div className="max-w-xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Nutrition & Beauty Bot</h1>
       <div className="h-[60vh] overflow-auto border rounded p-4 bg-white">
-        {messages.map((m, i) => (
-          <MessageBubble key={i} text={m.text} isUser={m.isUser} />
+        {messages.map((m, idx) => (
+          <MessageBubble key={idx} text={m.text} isUser={m.isUser} />
         ))}
       </div>
       <ChatInput onSend={sendMessage} />
+      <ToastContainer position="bottom-center" />
     </div>
-  );
+  )
 }
+
+export default HomePage
