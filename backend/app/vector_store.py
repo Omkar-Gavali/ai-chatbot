@@ -1,84 +1,65 @@
 # backend/app/vector_store.py
 
 import os
-import fitz  # PyMuPDF
-import json
 import logging
+from typing import List
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from pypdf import PdfReader
 from app.config import PDF_PATH, PERSIST_DIRECTORY, CHROMA_COLLECTION_NAME
 
-
-
-
-
-# Logging
 logging.basicConfig(level=logging.INFO)
 
 def get_embeddings():
     return HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 
-
-
-def process_pdf(pdf_path):
+def read_pdfs(folder: str) -> List[dict]:
     docs = []
-    pdf_document = fitz.open(pdf_path)
-    file_name = os.path.basename(pdf_path)
-
-    for page_num in range(len(pdf_document)):
-        page = pdf_document[page_num]
-        text = page.get_text("text")
-        if text.strip():
+    for fname in os.listdir(folder):
+        if fname.lower().endswith(".pdf"):
+            path = os.path.join(folder, fname)
+            reader = PdfReader(path)
+            content = ""
+            for page in reader.pages:
+                content += page.extract_text() or ""
             docs.append({
-                "content": text,
-                "metadata": {"page": page_num + 1, "file_name": file_name}
+                "content": content,
+                "metadata": {"source": fname}
             })
     return docs
 
-def process_json(json_path):
-    docs = []
-    file_name = os.path.basename(json_path)
-    with open(json_path, "r") as file:
-        data = json.load(file)
-        for idx, item in enumerate(data):
-            docs.append({
-                "content": json.dumps(item),
-                "metadata": {"id": idx + 1, "file_name": file_name}
-            })
-    return docs
-
-def split_documents(docs, chunk_size=500, chunk_overlap=50):
+def split_documents(docs: List[dict], chunk_size=1000, chunk_overlap=100):
     splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-    return splitter.create_documents(
-        texts=[doc["content"] for doc in docs],
-        metadatas=[doc["metadata"] for doc in docs]
-    )
+    texts = [doc["content"] for doc in docs]
+    metadatas = [doc["metadata"] for doc in docs]
+    return splitter.create_documents(texts=texts, metadatas=metadatas)
 
-def ingest_data():
-    logging.info(f"📥 Ingesting data from {PDF_PATH} ")
-    vector_db = init_vector_store()
-
-    pdf_docs = process_pdf(PDF_PATH)
-    
-    all_docs = pdf_docs 
-
-    if not all_docs:
-        logging.warning("No documents found! Check file paths.")
-        return vector_db
-
-    split_docs = split_documents(all_docs)
-    vector_db.add_documents(split_docs)
-    vector_db.persist()
-    return vector_db
-
-# vector_store.py
-
-
-def get_vector_store():
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+def init_vector_store():
     return Chroma(
         collection_name=CHROMA_COLLECTION_NAME,
         persist_directory=PERSIST_DIRECTORY,
-        embedding_function=embeddings
+        embedding_function=get_embeddings()
     )
+
+def ingest_data():
+    # If the persistence folder already exists and has data, skip re-building
+    if os.path.isdir(PERSIST_DIRECTORY) and os.listdir(PERSIST_DIRECTORY):
+        logging.info("⚠️  Found existing Chroma data—skipping ingestion.")
+        return init_vector_store()
+
+    logging.info(f"📥 Ingesting PDFs from {PDF_PATH}")
+    docs = read_pdfs(PDF_PATH)
+    if not docs:
+        logging.warning("❌ No PDFs found.")
+        return
+
+    splits = split_documents(docs)
+    store = init_vector_store()
+    store.add_documents(splits)
+    store.persist()
+    logging.info("✅ Ingestion complete.")
+    return store
+
+def get_vector_store():
+    return init_vector_store()

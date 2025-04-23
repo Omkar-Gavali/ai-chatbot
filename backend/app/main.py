@@ -1,27 +1,16 @@
-# backend/app/main.py (excerpt)
+# backend/app/main.py
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import os
-
-
-from .embedder import get_embeddings
+from app.vector_store import get_vector_store, get_embeddings, ingest_data
 from groq import Groq
 import os
 
 app = FastAPI()
+
 groq = Groq(api_key=os.getenv("GROQ_API_KEY"))
-# Reuse the same adapter
-# main.py
-
-from app.vector_store import get_vector_store
-
-app = FastAPI()
-vector_db = get_vector_store()
-
-@app.get("/")
-def read_root():
-    return {"message": "Chatbot is live!"}
-
+vector_db = None
+embedding_model = None
 
 class ChatRequest(BaseModel):
     message: str
@@ -31,32 +20,34 @@ class ChatResponse(BaseModel):
 
 @app.on_event("startup")
 def startup_event():
-    from .indexer import index_pdfs
-    index_pdfs(folder=os.path.join(os.path.dirname(__file__), "..", "data"))
+    global vector_db, embedding_model
+    ingest_data()  # Build or update the vector DB from PDFs
+    vector_db = get_vector_store()
+    embedding_model = get_embeddings()
 
-    
+@app.get("/")
+def root():
+    return {"message": "Chatbot is live!"}
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
-        # 1. Embed the query
-        q_emb = query_embedding_fn([request.message])[0]
+        query = request.message
+        query_vector = embedding_model.embed_query(query)
 
-        # 2. Retrieve relevant PDF chunks
-        results = collection.query(
-            query_embeddings=[q_emb],
-            n_results=3
-        )
-        contexts = "\n\n".join(results["documents"][0])
+        # search
+        results = vector_db.similarity_search_by_vector(query_vector, k=3)
+        context = "\n\n".join(doc.page_content for doc in results)
 
-        # 3. Call Groq LLM with context
+        # format and call Groq
         messages = [
-            {"role": "system",  "content": contexts},
-            {"role": "user",    "content": request.message},
+            {"role": "system", "content": context},
+            {"role": "user", "content": query}
         ]
+
         resp = groq.chat.completions.create(
-            messages=messages,
-            model="llama3-8b-8192"
+            model="llama3-8b-8192",
+            messages=messages
         )
         return {"reply": resp.choices[0].message.content}
     except Exception as e:
