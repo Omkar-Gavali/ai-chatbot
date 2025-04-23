@@ -9,13 +9,13 @@ dependencies:
     specifier: ^1.8.4
     version: 1.8.4
   next:
-    specifier: 15.3.1
+    specifier: ^15.3.1
     version: 15.3.1(react-dom@19.1.0)(react@19.1.0)
   react:
-    specifier: ^19.0.0
+    specifier: ^19.1.0
     version: 19.1.0
   react-dom:
-    specifier: ^19.0.0
+    specifier: ^19.1.0
     version: 19.1.0(react@19.1.0)
   react-toastify:
     specifier: ^11.0.5
