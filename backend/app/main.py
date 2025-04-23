@@ -1,7 +1,8 @@
 # backend/app/main.py (excerpt)
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from .vector_store import collection
+
+
 from .embedder import get_embeddings
 from groq import Groq
 import os
@@ -9,7 +10,17 @@ import os
 app = FastAPI()
 groq = Groq(api_key=os.getenv("GROQ_API_KEY"))
 # Reuse the same adapter
-query_embedding_fn = create_langchain_embedding(get_embeddings())
+# main.py
+
+from app.vector_store import get_vector_store
+
+app = FastAPI()
+vector_db = get_vector_store()
+
+@app.get("/")
+def read_root():
+    return {"message": "Chatbot is live!"}
+
 
 class ChatRequest(BaseModel):
     message: str

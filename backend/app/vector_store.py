@@ -10,19 +10,16 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from app.config import PDF_PATH, PERSIST_DIRECTORY, CHROMA_COLLECTION_NAME
 
 
+
+
+
 # Logging
 logging.basicConfig(level=logging.INFO)
 
 def get_embeddings():
     return HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 
-def init_vector_store():
-    embeddings = get_embeddings()
-    return Chroma(
-        collection_name=CHROMA_COLLECTION_NAME,
-        embedding_function=embeddings,
-        persist_directory=PERSIST_DIRECTORY
-    )
+
 
 def process_pdf(pdf_path):
     docs = []
@@ -74,3 +71,14 @@ def ingest_data():
     vector_db.add_documents(split_docs)
     vector_db.persist()
     return vector_db
+
+# vector_store.py
+
+
+def get_vector_store():
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+    return Chroma(
+        collection_name=CHROMA_COLLECTION_NAME,
+        persist_directory=PERSIST_DIRECTORY,
+        embedding_function=embeddings
+    )
