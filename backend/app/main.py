@@ -1,6 +1,7 @@
 # backend/app/main.py (excerpt)
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import os
 
 
 from .embedder import get_embeddings
@@ -31,7 +32,9 @@ class ChatResponse(BaseModel):
 @app.on_event("startup")
 def startup_event():
     from .indexer import index_pdfs
-    index_pdfs(folder="backend/data")
+    index_pdfs(folder=os.path.join(os.path.dirname(__file__), "..", "data"))
+
+    
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):

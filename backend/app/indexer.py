@@ -10,7 +10,7 @@ def index_pdfs(folder: str):
     chunks = chunk_documents(docs)
 
     # Initialize the vector DB
-    collection = init_vector_store()
+    collection = get_vector_store()
 
     # Prepare lists
     texts     = [c["text"] for c in chunks]
@@ -18,7 +18,7 @@ def index_pdfs(folder: str):
     ids       = [c["id"] for c in chunks]
 
     # Add to Chroma
-    collection.add(
+    collection.add_documents(
         documents=texts,
         metadatas=metadatas,
         ids=ids
