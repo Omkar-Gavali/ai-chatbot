@@ -10,7 +10,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
-+       <Script
+         <Script
            src="https://cdn.tailwindcss.com"
            strategy="beforeInteractive"
          />
