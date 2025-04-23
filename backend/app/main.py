@@ -7,6 +7,22 @@ from groq import Groq
 import os
 
 app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+origins = [
+    "https://ai-chatbot-1-kry0mxahl-omkars-projects-b6aabf59.vercel.app",  # Replace with your actual Vercel domain
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 groq = Groq(api_key=os.getenv("GROQ_API_KEY"))
 vector_db = None
