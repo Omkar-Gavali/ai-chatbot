@@ -5,6 +5,7 @@ import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
+
 type Message = { text: string; isUser: boolean }
 
 const HomePage: React.FC = () => {
