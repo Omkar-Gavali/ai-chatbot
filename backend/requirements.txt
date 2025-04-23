@@ -3,3 +3,32 @@ uvicorn
 groq
 httpx
 python-dotenv
+# Core backend
+fastapi
+uvicorn[standard]
+
+# Langchain and vector store
+langchain>=0.1.0
+chromadb
+sentence-transformers  # For HuggingFaceEmbeddings
+pypdf                  # For PDF parsing
+
+# Optional: for chunking text
+tiktoken
+numpy
+
+# For JSON/PDF handling
+PyMuPDF                 # Alternative to PyPDF if using fitz
+python-dotenv           # To load environment variables
+
+# Logging and dev utilities
+loguru
+
+# If you're calling any AI APIs like OpenAI, Groq etc.
+      # Remove if unused
+groq-client             # Remove if unused
+
+# If using embeddings from HuggingFace
+transformers
+torch
+langchain-community
