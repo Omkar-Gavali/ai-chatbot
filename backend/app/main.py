@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "https://ai-chatbot-1-kry0mxahl-omkars-projects-b6aabf59.vercel.app",  # Replace with your actual Vercel domain
+    "https://ai-chatbot-1-psi.vercel.app/",  # Replace with your actual Vercel domain
 ]
 
 app.add_middleware(
@@ -68,3 +68,7 @@ async def chat(request: ChatRequest):
         return {"reply": resp.choices[0].message.content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.head("/")
+def read_root():
+    return Response(status_code=200)
