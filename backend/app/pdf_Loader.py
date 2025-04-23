@@ -14,3 +14,4 @@ def load_pdfs(text_folder: str) -> dict[str, str]:
                 text += page.extract_text() or ""
             docs[fname] = text
     return docs
+load_pdfs("backend/data")
