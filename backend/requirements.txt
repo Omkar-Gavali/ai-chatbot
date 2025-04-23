@@ -24,9 +24,7 @@ python-dotenv           # To load environment variables
 # Logging and dev utilities
 loguru
 
-# If you're calling any AI APIs like OpenAI, Groq etc.
-      # Remove if unused
-groq-client             # Remove if unused
+
 
 # If using embeddings from HuggingFace
 transformers
