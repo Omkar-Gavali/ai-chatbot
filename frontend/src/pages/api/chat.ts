@@ -8,21 +8,19 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ChatResponse | { error: string }>
 ) {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
-  console.log('Chat proxy calling:', `${baseURL}/chat`);
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', ['POST']);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
 
   try {
-    const { message } = req.body;
-    const response = await axios.post<ChatResponse>(
-      `${baseURL}/chat`,
-      { message }
-    ); // Throws if ECONNREFUSED or non-2xx :contentReference[oaicite:1]{index=1}
-    
-    // Forward the backend’s reply
-    return res.status(200).json({ reply: response.data.reply });
-  } catch (err: any) {
+    const { message } = req.body as { message: string };
+    // ... axios call and forwarding logic ...
+  } catch (err: unknown) {
     console.error('Chat API error:', err);
-    // Return error message to front end
-    return res.status(500).json({ error: 'Failed to fetch from backend.' });
+    // Narrow to Error to safely access .message if needed
+    const errorMessage =
+      err instanceof Error ? err.message : 'Unknown error';
+    return res.status(500).json({ error: errorMessage });
   }
 }
