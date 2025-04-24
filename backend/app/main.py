@@ -31,10 +31,22 @@ groq_client = None  # 👈 Initialize later
 @app.on_event("startup")
 def startup_event():
     global vector_db, embedding_model, groq_client
-    ingest_data()
-    vector_db = get_vector_store()
-    embedding_model = get_embeddings()
-    groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))  # 👈 NOW it's safe
+
+    # Wrap ingestion in try/except to avoid crashing the app
+    try:
+        ingest_data()
+        print("✅ Data ingestion completed.")
+    except Exception as e:
+        print(f"⚠️  Data ingestion failed: {e}")
+
+    try:
+        vector_db = get_vector_store()
+        embedding_model = get_embeddings()
+        groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        print("✅ Startup components initialized.")
+    except Exception as e:
+        print(f"❌ Startup initialization failed: {e}")
+
     
 
 

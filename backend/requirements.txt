@@ -1,32 +1,31 @@
-fastapi
-uvicorn
-groq
-httpx
-python-dotenv
-# Core backend
-fastapi
+# Web framework
+fastapi==0.115.9
 uvicorn[standard]
 
-# Langchain and vector store
+# GROQ client
+groq
+
+# HTTP requests
+httpx
+
+# Env vars
+python-dotenv
+
+# Vector store & LangChain
 langchain>=0.1.0
-chromadb
-sentence-transformers  # For HuggingFaceEmbeddings
-pypdf                  # For PDF parsing
+chromadb>=0.4.0,<0.7.0
+langchain-community
 
-# Optional: for chunking text
-tiktoken
-numpy
-
-# For JSON/PDF handling
-PyMuPDF                 # Alternative to PyPDF if using fitz
-python-dotenv           # To load environment variables
-
-# Logging and dev utilities
-loguru
-
-
-
-# If using embeddings from HuggingFace
+# Embeddings and NLP
+sentence-transformers   # for HuggingFaceEmbeddings
 transformers
 torch
-langchain-community
+
+# PDF parsing
+pypdf
+PyMuPDF                 # alternative PDF reader
+
+# Tokenization and utilities
+tiktoken
+numpy
+loguru                  # logging
