@@ -1,5 +1,6 @@
 # backend/app/main.py
 
+from fastapi.responses import Response
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from app.vector_store import get_vector_store, get_embeddings, ingest_data
@@ -8,23 +9,12 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "Chatbot is live!"}
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
-
-
-
+# CORS setup
 origins = [
-    "https://ai-chatbot-1-psi.vercel.app/",  # Replace with your actual Vercel domain
+    "https://ai-chatbot-1-psi.vercel.app/",  # Your frontend domain
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -33,10 +23,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-groq = Groq(api_key=os.getenv("GROQ_API_KEY"))
+# Globals to initialize at startup
 vector_db = None
 embedding_model = None
+groq_client = None  # 👈 Initialize later
+
+@app.on_event("startup")
+def startup_event():
+    global vector_db, embedding_model, groq_client
+    ingest_data()
+    vector_db = get_vector_store()
+    embedding_model = get_embeddings()
+    groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))  # 👈 NOW it's safe
+    
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Chatbot is live!"}
 
 class ChatRequest(BaseModel):
     message: str
@@ -44,32 +48,20 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
 
-@app.on_event("startup")
-def startup_event():
-    global vector_db, embedding_model
-    ingest_data()  # Build or update the vector DB from PDFs
-    vector_db = get_vector_store()
-    embedding_model = get_embeddings()
-
-
-
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
         query = request.message
         query_vector = embedding_model.embed_query(query)
-
-        # search
         results = vector_db.similarity_search_by_vector(query_vector, k=3)
         context = "\n\n".join(doc.page_content for doc in results)
 
-        # format and call Groq
         messages = [
             {"role": "system", "content": context},
             {"role": "user", "content": query}
         ]
 
-        resp = groq.chat.completions.create(
+        resp = groq_client.chat.completions.create(
             model="llama3-8b-8192",
             messages=messages
         )
@@ -78,5 +70,6 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.head("/")
-def read_root():
+def health_check():
+    from fastapi.responses import Response
     return Response(status_code=200)
