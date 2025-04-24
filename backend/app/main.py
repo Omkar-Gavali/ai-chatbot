@@ -5,11 +5,21 @@ from pydantic import BaseModel
 from app.vector_store import get_vector_store, get_embeddings, ingest_data
 from groq import Groq
 import os
-
-app = FastAPI()
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
 
 app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Chatbot is live!"}
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
+
+
 
 origins = [
     "https://ai-chatbot-1-psi.vercel.app/",  # Replace with your actual Vercel domain
@@ -41,9 +51,7 @@ def startup_event():
     vector_db = get_vector_store()
     embedding_model = get_embeddings()
 
-@app.get("/")
-def root():
-    return {"message": "Chatbot is live!"}
+
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):

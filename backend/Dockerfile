@@ -1,10 +1,18 @@
-FROM python:3.10-slim
 
+# Dockerfile
+FROM python:3.11-slim
+
+# Install dependencies
 WORKDIR /app
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Copy application code
+COPY backend/app ./app
 
-COPY app app
+# Expose the port (Cloud Run uses $PORT)
+ENV PORT 8080
+EXPOSE 8080
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "10000"]
+# Run the server
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
