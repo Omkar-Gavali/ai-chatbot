@@ -28,6 +28,7 @@ body {
 */
 
 /* globals.css */
+@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -49,4 +50,9 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+body {
+  @apply bg-charcoal text-white;
 }
