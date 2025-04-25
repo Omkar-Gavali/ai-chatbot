@@ -1,8 +1,9 @@
+/*
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+body {
+  @apply bg-charcoal text-white;
 }
 
 @theme inline {
@@ -18,17 +19,34 @@
     --foreground: #ededed;
   }
 }
-/*
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
- */ 
+*/
 
+/* globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* Custom styles */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
 
-/* Apply NutriBot theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
 body {
-  @apply bg-charcoal text-white;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }
