@@ -44,6 +44,7 @@ def init_vector_store():
 
 def ingest_data():
     # If the persistence folder already exists and has data, skip re-building
+    logging.info(f"🔍 Loading vector store from {PERSIST_DIRECTORY}")
     if os.path.isdir(PERSIST_DIRECTORY) and os.listdir(PERSIST_DIRECTORY):
         logging.info("⚠️  Found existing Chroma data—skipping ingestion.")
         return init_vector_store()
