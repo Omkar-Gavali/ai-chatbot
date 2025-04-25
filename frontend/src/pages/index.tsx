@@ -27,7 +27,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Nutrition & Beauty Bot</h1>
+      <h1 className="text-3xl font-extrabold mb-4 text-88d286">NutriBot 🍏</h1>
       <div className="h-[60vh] overflow-auto border rounded p-4 bg-white">
         {messages.map((m, idx) => (
           <MessageBubble key={idx} text={m.text} isUser={m.isUser} />

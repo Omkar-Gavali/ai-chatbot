@@ -29,3 +29,11 @@ PyMuPDF                 # alternative PDF reader
 tiktoken
 numpy
 loguru                  # logging
+
+lottie-react
+
+tailwindcss
+postcss
+autoprefixer
+eslint
+eslint-plugin-tailwindcss
