@@ -36,4 +36,4 @@ tailwindcss
 postcss
 autoprefixer
 eslint
-eslint-plugin-tailwindcss
+
