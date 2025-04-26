@@ -32,9 +32,6 @@ loguru                  # logging
 
 
 
-tailwindcss
-postcss
-autoprefixer
-eslint
+
 
 
