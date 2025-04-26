@@ -1,5 +1,10 @@
 'use client'
-import Lottie from 'lottie-react'
+'use client';
+import dynamic from 'next/dynamic';
+
+// Disable SSR for Lottie entirely
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+
 import smoothie from '../../public/smoothie.json'
 import { useState } from 'react'
 import ChatInput from '@/components/ChatInput'
@@ -30,11 +35,13 @@ export default function Home() {
       setMessages(msgs => [...msgs, { text: 'Oops! Something went wrong.', isUser: false }])
     }
     // At end of handleSend, after setMessages:
-    setTimeout(() => {
-      document
-        .getElementById('messageContainer')
-        ?.scrollTo({ top: 1e6, behavior: 'smooth' });
-    }, 50)
+      if (typeof window !== 'undefined') {
+          setTimeout(() => {
+            document
+              .getElementById('messageContainer')
+              ?.scrollTo({ top: 1e6, behavior: 'smooth' })
+          }, 50)
+        }
 
   }
 
