@@ -1,25 +1,18 @@
-// layout.tsx
-import './globals.css';
-import { Analytics } from '@vercel/analytics/react';
+import { Poppins } from 'next/font/google';
+import "./globals.css";
+import { ReactNode } from "react";
 
-export const metadata = {
-  title: 'My Chatbot',
-  description: 'AI-powered beauty & nutrition advisor',
-};
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '700'], // Add weights as needed
+});
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={poppins.className}>
       <body>
         {children}
-        <Analytics />
       </body>
     </html>
   );
 }
-
-

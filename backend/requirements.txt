@@ -36,4 +36,5 @@ tailwindcss
 postcss
 autoprefixer
 eslint
+lottie-react
 
