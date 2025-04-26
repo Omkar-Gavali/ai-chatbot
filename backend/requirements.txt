@@ -30,7 +30,7 @@ tiktoken
 numpy
 loguru                  # logging
 
-lottie-react
+
 
 tailwindcss
 postcss
