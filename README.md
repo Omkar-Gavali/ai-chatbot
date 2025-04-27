@@ -21,7 +21,6 @@
 Check out the live version of NutriBot here:  
 [🔗 Your Live Chatbot Site](https://ai-chatbot-1-psi.vercel.app/)
 
-C:\Users\Omkar\3D Objects\post_oev\ai-chatbot
 
 
 <p align="center">
