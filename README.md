@@ -16,9 +16,29 @@
 ├── .gitignore
 └── README.md
 
+## 🌐 Live Demo
+
+Check out the live version of NutriBot here:  
+[🔗 Your Live Chatbot Site](https://ai-chatbot-1-psi.vercel.app/)
+
+C:\Users\Omkar\3D Objects\post_oev\ai-chatbot
+
+
+<p align="center">
+  <img src="./frontend/public/demo.gif" alt="NutriBot Live Demo" width="600" />
+</p>
+
+<p align="center">
+  <img src="./assets/screenshot1.png" alt="Screenshot 1" width="180" style="margin-right: 8px;" />
+  <img src="./assets/screenshot2.png" alt="Screenshot 2" width="180" style="margin-right: 8px;" />
+  <img src="./assets/screenshot3.png" alt="Screenshot 3" width="180" />
+</p>
+
+---
 
 
 # 🌟 NutriBot - AI Powered Nutrition Chatbot
+Welcome to **NutriBot**, your go‐to assistant **trained on the nutritional properties of fruits and vegetables**. NutriBot excels at answering detailed questions such as _“How are the metabolic fates of copper and iron related?”_ by grounding every response in the source PDF data along with page numbre from that pdf.
 
 Welcome to **NutriBot** — a vision toward building powerful, ethical AI systems that will empower humanity by democratizing knowledge. This project is a humble step toward a future where **AI and AGI** are allies of positive change.
 
