@@ -1,20 +1,9 @@
 
 
-## Directory Structure
+# 🌟 NutriBot - AI Powered Nutrition Chatbot
+Welcome to **NutriBot**, your go to assistant **trained on the nutritional properties of fruits and vegetables**. NutriBot excels at answering detailed questions such as _“How are the metabolic fates of copper and iron related?”_ by grounding every response in the source PDF data along with page numbre from that pdf.
 
-├── backend/
-│   ├── app/           # FastAPI application
-│   ├── requirements.txt
-│   ├── Dockerfile
-├── frontend/
-│   ├── pages/         # Next.js pages & API routes
-│   ├── components/
-│   ├── package.json
-├── docs/
-│   ├── README.md
-│   └── rew.txt        # dev notes
-├── .gitignore
-└── README.md
+---
 
 ## 🌐 Live Demo
 
@@ -23,8 +12,15 @@ Check out the live version of NutriBot here:
 
 
 
+
 <p align="center">
   <img src="./frontend/public/demo.gif" alt="NutriBot Live Demo" width="600" />
+</p>
+<p align="center">
+  <img src="./frontend/public/demo2.gif" alt="NutriBot Live Demo" width="600" />
+</p>
+<p align="center">
+  <img src="./frontend/public/demo3.gif" alt="NutriBot Live Demo" width="600" />
 </p>
 
 <p align="center">
@@ -36,16 +32,6 @@ Check out the live version of NutriBot here:
 ---
 
 
-# 🌟 NutriBot - AI Powered Nutrition Chatbot
-Welcome to **NutriBot**, your go‐to assistant **trained on the nutritional properties of fruits and vegetables**. NutriBot excels at answering detailed questions such as _“How are the metabolic fates of copper and iron related?”_ by grounding every response in the source PDF data along with page numbre from that pdf.
-
-Welcome to **NutriBot** — a vision toward building powerful, ethical AI systems that will empower humanity by democratizing knowledge. This project is a humble step toward a future where **AI and AGI** are allies of positive change.
-
-NutriBot is currently designed to answer nutrition-related questions based on a **single PDF** document, but it is **future-proofed** to handle **multiple documents** seamlessly.
-
-Locally, it leverages a FastAPI backend with the Groq LLM API and LangChain/Chroma for semantic search over embedded PDF documents, and a Next.js (React) frontend for a responsive, animation-rich chat interface. In production, it can scale to ingest **any number** of PDF files, providing on-demand nutritional guidance via vector search.
-
-> ✨ “AI will reshape the world. Let's ensure it's a world where knowledge is free, well-being is prioritized, and every individual is empowered.”
 
 ---
  # Key Features  
