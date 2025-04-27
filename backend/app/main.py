@@ -16,11 +16,6 @@ from fastapi import Request, FastAPI, HTTPException
 app = FastAPI()
 
 
-app.mount(
-    "/data",
-    StaticFiles(directory=os.path.join(os.path.dirname(__file__), "../data")),
-    name="data",
-)
 
 # CORS setup
 origins = [
@@ -33,6 +28,14 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+
+
+app.mount(
+    "/data",
+    StaticFiles(directory=os.path.join(os.path.dirname(__file__), "../data")),
+    name="data",
 )
 
 # Globals to initialize at startup
