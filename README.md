@@ -1,6 +1,6 @@
 
 
-# 🌟 NutriBot - AI Powered Nutrition Chatbot
+#  NutriBot 🥝 - AI Powered Nutrition Chatbot
 Welcome to **NutriBot**, your go to assistant **trained on the nutritional properties of fruits and vegetables**. NutriBot excels at answering detailed questions such as _“Why does eating potato skin provide more iron than eating potato flesh?”_ by grounding every response in the source PDF data along with page numbre from that pdf.
 
 ---
@@ -180,11 +180,8 @@ NutriBot is part of a movement:
 - **`Dockerfile`**: Container spec.  
 - **`.env.example`**: Template env vars.
 
----
 
-## 💖 Made with ❤️ for the Future
 
-If you find this project inspiring, please ⭐ Star on GitHub and share with the world!
 
 ---
 
@@ -205,5 +202,9 @@ MIT License © 2025
 _"Every PDF you upload expands NutriBot’s ability to provide deeper, more connected nutritional insights. The future of personalized nutrition begins with the documents you share."_
 
 
- # Credits  
- Built with 💚 by **Omkar** — shaping AI for good, one delicious smoothie at a time!  
+---
+##  Made with 💖 for the Future
+
+If you find this project inspiring, please ⭐ Star on GitHub and share with the world!
+
+  
