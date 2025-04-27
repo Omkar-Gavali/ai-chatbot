@@ -24,7 +24,7 @@ app.mount(
 
 # CORS setup
 origins = [
-    "http://localhost:3000",
+    "https://ai-chatbot-backend-eu-599529522430.europe-west3.run.app",  # Your backend domain
     "https://ai-chatbot-1-psi.vercel.app/",  # Your frontend domain
 ]
 app.add_middleware(
