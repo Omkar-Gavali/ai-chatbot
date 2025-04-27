@@ -12,7 +12,7 @@ type Props = {
 };
 
 const MessageBubble: React.FC<Props> = ({ text, isUser = false }) => {
-  const backendUrl = 'http://localhost:8000';  // 👈 Your backend server
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL!;  // 👈 Your backend server
 
   return (
     <div className={`flex items-start mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}>

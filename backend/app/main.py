@@ -8,7 +8,7 @@ from groq import Groq
 import os
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-
+from fastapi import Request, FastAPI, HTTPException
 
 
 
@@ -72,51 +72,49 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
 
+SYSTEM_PROMPT = """
+You are NutriBot, an AI expert on nutrition of Fruits and vegetables.
+Answer the user's question based on the provided context.
+If the answer isn't found in the context, respond exactly:
+“My knowledge is based on my Nutrition of Fruits & Vegetable documents; I couldn't find a direct answer there. Here's what I can offer from my general expertise:..…”
+""".strip()
+
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
-    
-    try:
-        query = request.message
-        query_vector = embedding_model.embed_query(query)
-        results = vector_db.similarity_search_by_vector(query_vector, k=3)
-        context_text = "\n\n".join(
-        f"[{doc.metadata['source']} – page {doc.metadata.get('page', '?')}](/data/{doc.metadata['source']}#page={doc.metadata.get('page',1)})\n\n{doc.page_content}"
-        for doc in results
-        )
+async def chat(request: ChatRequest, req: Request):
+    # 1) Retrieve relevant chunks
+    q_vec   = embedding_model.embed_query(request.message)
+    docs    = vector_db.similarity_search_by_vector(q_vec, k=5)
 
+    # 2) Build “context” text only (no citations in the prompt)
+    context = "\n\n".join(doc.page_content for doc in docs)
 
-        # 1) DEFINE YOUR SYSTEM PROMPT HERE, AT MODULE LEVEL
-        SYSTEM_PROMPT = """
-        You are NutritionBot, an AI expert on nutrition and vegetables.
-
-        If the user's question isn't answered by the supplied Nutrition & Vegetable materials, say:
-        “I am NutriBot. My knowledge is based on  Nutrition and Vegetable documents, and I couldn't find a direct answer there.
-        However, here's what I can offer from my general expertise: …”
-
-        After your answer, always cite the document source(s) you used in this format at the end of your answer:
-
-        [filename.pdf](https://<YOUR_BACKEND_URL>/data/filename.pdf)
-
-        
-
-        Your entire reply (including citations) must be **no more than 500 characters**.  
-        """.strip()
-
-        messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "system", "content": context_text},
-        {"role": "user",   "content": query}
+    # 3) Call the LLM with plain context
+    resp = groq_client.chat.completions.create(
+        model="llama3-8b-8192",
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": context},
+            {"role": "user",   "content": request.message},
         ]
+    )
+    answer = resp.choices[0].message.content
 
-        resp = groq_client.chat.completions.create(
-            model="llama3-8b-8192",
-            messages=messages,
-            max_completion_tokens= 90 # Set desired token limit
+    # 4) Build a “References” list from the exact docs we used
+    references = []
+    for doc in docs:
+        fname = doc.metadata.get("source", "unknown.pdf")
+        page  = doc.metadata.get("page", 1)
+        base  = str(req.base_url).rstrip("/")
+        url   = f"{base}/data/{fname}#page={page}"
+        references.append(f"[{fname}]({url})")
 
-        )
-        return {"reply": resp.choices[0].message.content}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # 5) Return answer + a References section
+    full_reply = (f"{answer}\n\n"
+        f"**References:**\n"
+        f"Page No: {page}\n\n"
+        f"{references[0] if references else ''}"
+    )
+    return {"reply": full_reply}
 
 @app.head("/")
 def health_check():
