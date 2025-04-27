@@ -8,32 +8,46 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pypdf import PdfReader
 from app.config import PDF_PATH, PERSIST_DIRECTORY, CHROMA_COLLECTION_NAME
+from typing import List
+from PyPDF2 import PdfReader
+from langchain.schema import Document
+
+from langchain.schema import Document
+
+
 
 logging.basicConfig(level=logging.INFO)
 
 def get_embeddings():
     return HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 
-def read_pdfs(folder: str) -> List[dict]:
+
+
+def read_pdfs(folder: str) -> List[Document]:
     docs = []
     for fname in os.listdir(folder):
         if fname.lower().endswith(".pdf"):
             path = os.path.join(folder, fname)
             reader = PdfReader(path)
-            content = ""
-            for page in reader.pages:
-                content += page.extract_text() or ""
-            docs.append({
-                "content": content,
-                "metadata": {"source": fname}
-            })
+
+            for page_num, page in enumerate(reader.pages):
+                content = page.extract_text() or ""
+                if content.strip():  # Only add non-empty pages
+                    docs.append(Document(
+                        page_content=content,
+                        metadata={
+                            "source": fname,
+                            "page": page_num + 1  # pages are 1-indexed
+                        }
+                    ))
     return docs
 
-def split_documents(docs: List[dict], chunk_size=1000, chunk_overlap=100):
+
+
+def split_documents(docs: List[Document], chunk_size=1000, chunk_overlap=100) -> List[Document]:
     splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-    texts = [doc["content"] for doc in docs]
-    metadatas = [doc["metadata"] for doc in docs]
-    return splitter.create_documents(texts=texts, metadatas=metadatas)
+    return splitter.split_documents(docs)
+
 
 def init_vector_store():
     return Chroma(

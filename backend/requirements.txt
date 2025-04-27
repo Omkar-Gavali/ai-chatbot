@@ -23,7 +23,8 @@ torch
 
 # PDF parsing
 pypdf
-PyMuPDF                 # alternative PDF reader
+PyMuPDF
+PyPDF2                 # alternative PDF reader
 
 # Tokenization and utilities
 tiktoken
